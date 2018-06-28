@@ -85,6 +85,18 @@
 //    }
 //}
 
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    
+    if (error == nil)
+    {
+        [ProgressHUD showSuccess:@"已保存至手机相册"];
+    }
+    else
+    {
+        [ProgressHUD showError:@"保存失败，请重试"];
+    }
+}
+
 #pragma mark --------------- UITableViewDelegate,UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -125,10 +137,23 @@
             photosView.leaveBlock = ^{
                 wd.windowLevel = UIWindowLevelNormal;
             };
+            
+            photosView.longTapBlock = ^(id image) {
+                if([image isKindOfClass:[UIImage class]])
+                {
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+                    [alert addAction:[UIAlertAction actionWithTitle:@"保存图片" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
+                    {
+                        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+                    }]];
+                    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
+                }
+            };
             wd.windowLevel = UIWindowLevelAlert;
-            [wd addSubview:photosView];
+            [self.view addSubview:photosView];
         };
-        [wd addSubview:popupView];
+        [self.view addSubview:popupView];
         [popupView startAnimation];
     }
 }

@@ -10,8 +10,11 @@
 
 @interface XQShowPhotosView : UIView
 typedef void (^LeaveBlock)(void);
+typedef void (^LongTapBlock)(id image);
 
 @property(nonatomic,copy)LeaveBlock leaveBlock;
+
+@property(nonatomic,copy)LongTapBlock longTapBlock;
 
 - (instancetype)initWithFrame:(CGRect)frame pictureA:(NSArray *)pictureA currentPage:(NSUInteger)currentPage originRects:(NSArray<NSValue *> *)originRectA imgShowSizes:(NSArray<NSValue *> *)showSizeA;
 @end

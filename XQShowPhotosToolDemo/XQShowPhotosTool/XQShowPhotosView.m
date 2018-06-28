@@ -155,7 +155,7 @@ static const float MAX_SCALE = 2.0;
             if(scrollView.contentOffset.y >= contentH - HH)
                 scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, contentH - HH);
         }
-        
+     
         if(scrollView.contentOffset.y <= minOffsetY && [scrollView isKindOfClass:[XQShowScrollView class]])
         {
             if(!_isEndMove)
@@ -200,9 +200,14 @@ static const float MAX_SCALE = 2.0;
             
             CGPoint curPoint = [scrollView.panGestureRecognizer locationInView:showImgV];
             CGPoint prePoint;
-            if(decelerate)
+            CGPoint veloctyPoint = [scrollView.panGestureRecognizer velocityInView:self];
+            
+            CGFloat x = fabs(veloctyPoint.x);
+            CGFloat y = fabs(veloctyPoint.y);
+
+            if(decelerate && scrollView.contentOffset.x > 0 && scrollView.contentOffset.x < scrollView.contentSize.width - WW && x < y)
             {
-                prePoint = CGPointMake(curPoint.x + 3, curPoint.y + 3);
+                prePoint = CGPointMake(curPoint.x + 2, curPoint.y + 2);
             }
             else
             {
@@ -227,15 +232,15 @@ static const float MAX_SCALE = 2.0;
     if(scrollView == _scrollV)
     {
         int page = scrollView.contentOffset.x/WW;
-        if(page != _page)
-        {
-            for (UIView * sv in scrollView.subviews) {
-                if([sv isKindOfClass:[UIScrollView class]])
-                {
-                    [(UIScrollView *)sv setZoomScale:MIN_SCALE];
-                }
-            }
-        }
+//        if(page != _page)
+//        {
+//            for (UIView * sv in scrollView.subviews) {
+//                if([sv isKindOfClass:[UIScrollView class]])
+//                {
+//                    [(UIScrollView *)sv setZoomScale:MIN_SCALE];
+//                }
+//            }
+//        }
         _page = page;
         _pageC.currentPage = _page;
     }
@@ -319,30 +324,14 @@ static const float MAX_SCALE = 2.0;
 
 - (void)longTapAction:(UILongPressGestureRecognizer *)longGesture
 {
-    NSLog(@"++++++++++++++++++++longTap");
+//    NSLog(@"++++++++++++++++++++longTap");
 
     if(longGesture.state == UIGestureRecognizerStateBegan)
     {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        [alert addAction:[UIAlertAction actionWithTitle:@"保存图片" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
-                          {
-                              UIScrollView * sv = [_scrollV viewWithTag:_page + TagNum];
-                              UIImageView * imgV = [sv viewWithTag:2 * TagNum];
-                              UIImageWriteToSavedPhotosAlbum(imgV.image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-                          }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-//        [self.superview.superview.superview. presentViewController:alert animated:YES completion:nil];
-    }
-}
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-    
-    if (error == nil)
-    {
-        [ProgressHUD showSuccess:@"已保存至手机相册"];
-    }
-    else
-    {
-        [ProgressHUD showError:@"保存失败，请重试"];
+        UIScrollView * sv = [_scrollV viewWithTag:_page + TagNum];
+        XQShowImageView * showView = [sv viewWithTag:2 * TagNum];
+        if(_longTapBlock)
+            _longTapBlock(showView.imgView.image);
     }
 }
 @end
