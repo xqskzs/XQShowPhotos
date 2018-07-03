@@ -205,9 +205,23 @@ static const float MAX_SCALE = 2.0;
             CGFloat x = fabs(veloctyPoint.x);
             CGFloat y = fabs(veloctyPoint.y);
 
-            if(decelerate && scrollView.contentOffset.x > 0 && scrollView.contentOffset.x < scrollView.contentSize.width - WW && x < y)
+            if(decelerate && x < y)
             {
-                prePoint = CGPointMake(curPoint.x + 2, curPoint.y + 2);
+                if(scrollView.zoomScale > MIN_SCALE)
+                {
+                    if(scrollView.contentOffset.x > 0 && scrollView.contentOffset.x < scrollView.contentSize.width - WW)
+                    {
+                        prePoint = CGPointMake(curPoint.x + 2, curPoint.y + 2);
+                    }
+                    else
+                    {
+                        prePoint = curPoint;
+                    }
+                }
+                else
+                {
+                    prePoint = CGPointMake(curPoint.x + 2, curPoint.y + 2);
+                }
             }
             else
             {
