@@ -68,7 +68,7 @@ static const float BACK_ALPHA_SCALE = 1.6;
 {
     _scaleY = (_beginPoint.y - point.y)/_beginPoint.y * SCALE_RANGE * (self.hh/_selfH);
     _scaleX = (_beginPoint.x - point.x)/_beginPoint.x * SCALE_RANGE * (_selfH/WW) * (self.hh/_selfH);
-    NSLog(@"+++++++++++++++++++++scaleX:%lf,scaleY:%lf",_scaleX,_scaleY);
+//    NSLog(@"+++++++++++++++++++++scaleX:%lf,scaleY:%lf",_scaleX,_scaleY);
 }
 
 - (void)moveTouch:(CGPoint)curPoint previous:(CGPoint)prePoint

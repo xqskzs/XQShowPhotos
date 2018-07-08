@@ -137,7 +137,9 @@ static const float MAX_SCALE = 2.0;
 #pragma mark --------------- UIScrollViewDelegate
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if(!_isBeginZoom)
+    CGPoint veloctyPoint = [scrollView.panGestureRecognizer velocityInView:self];
+    CGFloat y = veloctyPoint.y;
+    if(!_isBeginZoom && y > 0)
     {
         CGSize size = [_showSizeA[_page] CGSizeValue];
         CGFloat contentH = scrollView.contentSize.height;
